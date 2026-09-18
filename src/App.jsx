@@ -11,6 +11,7 @@ import SignUpPage from "./pages/SignUpPage";
 
 import AdminLayout from "./components/layout/AdminLayout";
 import Dashboard from "./pages/admin/Dashboard";
+import Reports from "./pages/admin/Reports";
 
 function App() {
   return (
@@ -28,8 +29,9 @@ function App() {
       <Route path="*" element={<HomePage />} />
 
       <Route path="/admin" element={<AdminLayout />}>
-  <Route path="dashboard" element={<Dashboard />} />
-</Route>
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="reports" element={<Reports />} />
+      </Route>
     </Routes>
   );
 }
