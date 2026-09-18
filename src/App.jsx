@@ -9,6 +9,9 @@ import ProofOfWorkPage from "./pages/ProofOfWorkPage";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 
+import AdminLayout from "./components/layout/AdminLayout";
+import Dashboard from "./pages/admin/Dashboard";
+
 function App() {
   return (
     <Routes>
@@ -23,6 +26,10 @@ function App() {
 
       {/* Unmatched routes fall back to Home for now */}
       <Route path="*" element={<HomePage />} />
+
+      <Route path="/admin" element={<AdminLayout />}>
+  <Route path="dashboard" element={<Dashboard />} />
+</Route>
     </Routes>
   );
 }
