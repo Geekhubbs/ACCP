@@ -17,6 +17,7 @@ import RoutingRules from "./pages/admin/RoutingRules";
 import Settings from "./pages/admin/Settings";
 import Districts from "./pages/admin/Districts";
 import GovernmentOfficials from "./pages/admin/GovernmentOfficials";
+import Categories from "./pages/admin/Categories";
 
 function App() {
   return (
@@ -41,7 +42,10 @@ function App() {
         <Route path="settings" element={<Settings />} />
         <Route path="districts" element={<Districts />} />
         <Route path="officials" element={<GovernmentOfficials />} />
+        <Route path="categories" element={<Categories />} />
       </Route>
+
+      
     </Routes>
   );
 }
