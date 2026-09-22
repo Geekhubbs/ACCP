@@ -1,0 +1,90 @@
+export const auditActionOptions = [
+  { value: "all", label: "All Actions" },
+  { value: "Create", label: "Create" },
+  { value: "Update", label: "Update" },
+  { value: "Delete", label: "Delete" },
+  { value: "Login", label: "Login" },
+  { value: "StatusChange", label: "Status Change" },
+];
+
+export const auditRoleOptions = [
+  { value: "all", label: "All Roles" },
+  { value: "Administrator", label: "Administrator" },
+  { value: "Official", label: "Official" },
+  { value: "System", label: "System" },
+];
+
+export const mockAuditLogs = [
+  {
+    id: "LOG-1001",
+    actor: "Christian Oppong",
+    role: "Administrator",
+    action: "Update",
+    module: "Routing Rules",
+    description: "Updated priority for rule #RT-014 from Medium to High",
+    ipAddress: "102.176.44.21",
+    timestamp: "2026-09-21 14:32",
+  },
+  {
+    id: "LOG-1002",
+    actor: "Eng. Kwabena Asare",
+    role: "Official",
+    action: "StatusChange",
+    module: "Reports",
+    description: "Marked report #RPT-2291 as Resolved",
+    ipAddress: "102.176.12.87",
+    timestamp: "2026-09-21 13:58",
+  },
+  {
+    id: "LOG-1003",
+    actor: "System",
+    role: "System",
+    action: "Create",
+    module: "Notifications",
+    description: "Auto-generated notification for report #RPT-2291 resolution",
+    ipAddress: "internal",
+    timestamp: "2026-09-21 13:58",
+  },
+  {
+    id: "LOG-1004",
+    actor: "Ama Owusu",
+    role: "Official",
+    action: "Login",
+    module: "Auth",
+    description: "Signed in to Government Dashboard",
+    ipAddress: "102.176.55.10",
+    timestamp: "2026-09-21 09:14",
+  },
+  {
+    id: "LOG-1005",
+    actor: "Christian Oppong",
+    role: "Administrator",
+    action: "Create",
+    module: "Institutions",
+    description: "Added new institution: MMDA Security Unit",
+    ipAddress: "102.176.44.21",
+    timestamp: "2026-09-20 17:40",
+  },
+  {
+    id: "LOG-1006",
+    actor: "Christian Oppong",
+    role: "Administrator",
+    action: "Delete",
+    module: "Categories",
+    description: "Deactivated category: Environment & Green Spaces",
+    ipAddress: "102.176.44.21",
+    timestamp: "2026-09-20 17:22",
+  },
+  {
+    id: "LOG-1007",
+    actor: "Insp. Adjoa Frimpong",
+    role: "Official",
+    action: "Update",
+    module: "Reports",
+    description: "Reassigned report #RPT-2278 to field unit",
+    ipAddress: "102.176.60.33",
+    timestamp: "2026-09-20 11:05",
+  },
+];
+
+export const totalAuditLogs = mockAuditLogs.length;

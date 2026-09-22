@@ -18,6 +18,10 @@ import Settings from "./pages/admin/Settings";
 import Districts from "./pages/admin/Districts";
 import GovernmentOfficials from "./pages/admin/GovernmentOfficials";
 import Categories from "./pages/admin/Categories";
+import Institutions from "./pages/admin/Institutions";
+import Permissions from "./pages/admin/Permissions";
+import AuditLogs from "./pages/admin/AuditLogs";
+
 
 function App() {
   return (
@@ -43,6 +47,9 @@ function App() {
         <Route path="districts" element={<Districts />} />
         <Route path="officials" element={<GovernmentOfficials />} />
         <Route path="categories" element={<Categories />} />
+        <Route path="institutions" element={<Institutions />} />
+        <Route path="permissions" element={<Permissions />} />
+        <Route path="audit-logs" element={<AuditLogs />} />
       </Route>
 
       
