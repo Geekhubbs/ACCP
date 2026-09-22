@@ -9,6 +9,16 @@ import ProofOfWorkPage from "./pages/ProofOfWorkPage";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 
+import AdminLayout from "./components/layout/AdminLayout";
+import Dashboard from "./pages/admin/Dashboard";
+import Reports from "./pages/admin/Reports";
+import Users from "./pages/admin/Users";
+import RoutingRules from "./pages/admin/RoutingRules";
+import Settings from "./pages/admin/Settings";
+import Districts from "./pages/admin/Districts";
+import GovernmentOfficials from "./pages/admin/GovernmentOfficials";
+import Categories from "./pages/admin/Categories";
+
 function App() {
   return (
     <Routes>
@@ -23,6 +33,19 @@ function App() {
 
       {/* Unmatched routes fall back to Home for now */}
       <Route path="*" element={<HomePage />} />
+
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="reports" element={<Reports />} />
+        <Route path="users" element={<Users />} />
+        <Route path="routing-rules" element={<RoutingRules />} />
+        <Route path="settings" element={<Settings />} />
+        <Route path="districts" element={<Districts />} />
+        <Route path="officials" element={<GovernmentOfficials />} />
+        <Route path="categories" element={<Categories />} />
+      </Route>
+
+      
     </Routes>
   );
 }
