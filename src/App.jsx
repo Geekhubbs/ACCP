@@ -21,7 +21,7 @@ import Categories from "./pages/admin/Categories";
 import Institutions from "./pages/admin/Institutions";
 import Permissions from "./pages/admin/Permissions";
 import AuditLogs from "./pages/admin/AuditLogs";
-
+import { Navigate } from "react-router-dom";
 
 function App() {
   return (
@@ -39,6 +39,7 @@ function App() {
       <Route path="*" element={<HomePage />} />
 
       <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<Navigate to="/admin/dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="reports" element={<Reports />} />
         <Route path="users" element={<Users />} />
@@ -51,8 +52,6 @@ function App() {
         <Route path="permissions" element={<Permissions />} />
         <Route path="audit-logs" element={<AuditLogs />} />
       </Route>
-
-      
     </Routes>
   );
 }
