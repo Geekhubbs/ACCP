@@ -14,6 +14,8 @@ import {
   officialStatusOptions,
   totalOfficials,
 } from "../../data/admin/mockOfficials";
+import { useSession } from "../../context/SessionContext";
+import { scopeRows, isRegional } from "../../lib/scope";
 
 const STATUS_VARIANT = {
   Active: "success",
@@ -22,13 +24,21 @@ const STATUS_VARIANT = {
 };
 
 export default function GovernmentOfficials() {
+  const { user } = useSession();
+  const regional = isRegional(user);
+
+  const scopedOfficials = useMemo(
+    () => scopeRows(mockOfficials, user, (o) => o.district),
+    [user],
+  );
+
   const [search, setSearch] = useState("");
   const [district, setDistrict] = useState("all");
   const [institution, setInstitution] = useState("all");
   const [status, setStatus] = useState("all");
 
   const filtered = useMemo(() => {
-    return mockOfficials.filter((o) => {
+    return scopedOfficials.filter((o) => {
       const matchesSearch =
         !search.trim() ||
         o.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -45,19 +55,21 @@ export default function GovernmentOfficials() {
         matchesSearch && matchesDistrict && matchesInstitution && matchesStatus
       );
     });
-  }, [search, district, institution, status]);
+  }, [scopedOfficials, search, district, institution, status]);
 
   const metrics = useMemo(
     () => ({
-      active: mockOfficials.filter((o) => o.status === "Active").length,
-      onLeave: mockOfficials.filter((o) => o.status === "On Leave").length,
-      suspended: mockOfficials.filter((o) => o.status === "Suspended").length,
-      avgLoad: Math.round(
-        mockOfficials.reduce((sum, o) => sum + o.reportsHandled, 0) /
-          mockOfficials.length,
-      ),
+      active: scopedOfficials.filter((o) => o.status === "Active").length,
+      onLeave: scopedOfficials.filter((o) => o.status === "On Leave").length,
+      suspended: scopedOfficials.filter((o) => o.status === "Suspended").length,
+      avgLoad: scopedOfficials.length
+        ? Math.round(
+            scopedOfficials.reduce((sum, o) => sum + o.reportsHandled, 0) /
+              scopedOfficials.length,
+          )
+        : 0,
     }),
-    [],
+    [scopedOfficials],
   );
 
   const columns = [
@@ -110,8 +122,9 @@ export default function GovernmentOfficials() {
             Government Officials
           </h1>
           <p className="text-sm text-slate-500">
-            Roster of MMDA engineers, inspectors, and department leads across
-            the region.
+            {regional
+              ? "Roster of MMDA engineers, inspectors, and department leads across the region."
+              : `Officials assigned to ${user.jurisdictionName}.`}
           </p>
         </div>
         <Button variant="primary" icon={UserPlus}>
@@ -121,9 +134,9 @@ export default function GovernmentOfficials() {
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
         <MetricCard
-          label="Total Officials"
-          value={totalOfficials}
-          delta="Across 43 MMDAs"
+          label={regional ? "Total Officials" : "Officials in Jurisdiction"}
+          value={regional ? totalOfficials : scopedOfficials.length}
+          delta={regional ? "Across 43 MMDAs" : user.jurisdictionName}
         />
         <MetricCard label="Active" value={metrics.active} />
         <MetricCard label="On Leave" value={metrics.onLeave} />
@@ -142,11 +155,13 @@ export default function GovernmentOfficials() {
             className="w-full outline-none text-sm text-slate-700 placeholder:text-slate-400 bg-transparent"
           />
         </div>
-        <Select
-          value={district}
-          onChange={setDistrict}
-          options={mmdaFilterOptions}
-        />
+        {regional && (
+          <Select
+            value={district}
+            onChange={setDistrict}
+            options={mmdaFilterOptions}
+          />
+        )}
         <Select
           value={institution}
           onChange={setInstitution}
@@ -162,8 +177,8 @@ export default function GovernmentOfficials() {
       <div className="rounded-xl border border-slate-200 bg-white p-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-semibold text-slate-900">
-            Showing {filtered.length} of {mockOfficials.length} officials
-            (sample of {totalOfficials} total)
+            Showing {filtered.length} of {scopedOfficials.length} officials
+            {regional && ` (sample of ${totalOfficials} total)`}
           </h2>
         </div>
         <DataTable

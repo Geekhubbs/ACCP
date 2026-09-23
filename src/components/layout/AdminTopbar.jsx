@@ -1,6 +1,10 @@
 import { Search, Bell, User } from "lucide-react";
+import { useSession } from "../../context/SessionContext";
+import RoleSwitcher from "../ui/admin/RoleSwitcher";
 
-export default function AdminTopbar({ regionLabel = "Ashanti Region • ARCC Authorized" }) {
+export default function AdminTopbar() {
+  const { user } = useSession();
+
   return (
     <header className="flex items-center justify-between gap-4 border-b border-slate-200 bg-white px-6 py-3">
       <div className="flex min-w-0 flex-1 items-center gap-2 rounded-lg bg-slate-50 px-3 py-2">
@@ -12,8 +16,10 @@ export default function AdminTopbar({ regionLabel = "Ashanti Region • ARCC Aut
         />
       </div>
 
+      <RoleSwitcher />
+
       <span className="hidden shrink-0 items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 md:inline-flex">
-        {regionLabel}
+        {user.jurisdictionName}
       </span>
 
       <button className="relative rounded-full p-2 text-slate-500 hover:bg-slate-100">
@@ -25,7 +31,7 @@ export default function AdminTopbar({ regionLabel = "Ashanti Region • ARCC Aut
         <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-800 text-white">
           <User size={14} />
         </div>
-        <span className="text-sm font-medium text-slate-700">Administrator</span>
+        <span className="text-sm font-medium text-slate-700">{user.name}</span>
       </div>
     </header>
   );

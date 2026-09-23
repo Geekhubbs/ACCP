@@ -15,11 +15,21 @@ import {
   reportStatusOptions,
   reportPriorityOptions,
 } from "../../data/admin/mockReports";
+import { useSession } from "../../context/SessionContext";
+import { scopeRows, isRegional } from "../../lib/scope";
 
 const categoryLabel = (id) =>
   reportCategories.find((c) => c.id === id)?.label ?? id;
 
 export default function Reports() {
+  const { user } = useSession();
+  const regional = isRegional(user);
+
+  const scopedReports = useMemo(
+    () => scopeRows(mockReports, user, (r) => r.district),
+    [user],
+  );
+
   const [search, setSearch] = useState("");
   const [district, setDistrict] = useState("all");
   const [category, setCategory] = useState("all");
@@ -27,7 +37,7 @@ export default function Reports() {
   const [priority, setPriority] = useState("all");
 
   const filtered = useMemo(() => {
-    return mockReports.filter((r) => {
+    return scopedReports.filter((r) => {
       const matchesSearch =
         !search.trim() ||
         r.id.toLowerCase().includes(search.toLowerCase()) ||
@@ -48,17 +58,18 @@ export default function Reports() {
         matchesDistrict
       );
     });
-  }, [search, district, category, status, priority]);
+  }, [scopedReports, search, district, category, status, priority]);
 
   const metrics = useMemo(
     () => ({
-      total: mockReports.length,
-      pending: mockReports.filter((r) => r.status === "Pending").length,
-      inProgress: mockReports.filter((r) => r.status === "In Progress").length,
-      resolved: mockReports.filter((r) => r.status === "Resolved").length,
-      emergency: mockReports.filter((r) => r.priority === "emergency").length,
+      total: scopedReports.length,
+      pending: scopedReports.filter((r) => r.status === "Pending").length,
+      inProgress: scopedReports.filter((r) => r.status === "In Progress")
+        .length,
+      resolved: scopedReports.filter((r) => r.status === "Resolved").length,
+      emergency: scopedReports.filter((r) => r.priority === "emergency").length,
     }),
-    [],
+    [scopedReports],
   );
 
   const columns = [
@@ -100,8 +111,9 @@ export default function Reports() {
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Reports</h1>
           <p className="text-sm text-slate-500">
-            All citizen reports across the 43 Ashanti MMDAs — filter, triage,
-            and monitor SLA status.
+            {regional
+              ? "All citizen reports across the 43 Ashanti MMDAs — filter, triage, and monitor SLA status."
+              : `Citizen reports for ${user.jurisdictionName} — filter, triage, and monitor SLA status.`}
           </p>
         </div>
         <Button variant="outline" icon={Download}>
@@ -133,11 +145,13 @@ export default function Reports() {
               className="w-full outline-none text-sm text-slate-700 placeholder:text-slate-400 bg-transparent"
             />
           </div>
-          <Select
-            value={district}
-            onChange={setDistrict}
-            options={mmdaFilterOptions}
-          />
+          {regional && (
+            <Select
+              value={district}
+              onChange={setDistrict}
+              options={mmdaFilterOptions}
+            />
+          )}
           <Select
             value={status}
             onChange={setStatus}
@@ -173,7 +187,7 @@ export default function Reports() {
       <div className="rounded-xl border border-slate-200 bg-white p-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-semibold text-slate-900">
-            Showing {filtered.length} of {mockReports.length} reports
+            Showing {filtered.length} of {scopedReports.length} reports
           </h2>
         </div>
         <DataTable

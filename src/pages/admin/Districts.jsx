@@ -11,6 +11,8 @@ import {
   districtStats,
   districtTypeOptions,
 } from "../../data/admin/districtStats";
+import { useSession } from "../../context/SessionContext";
+import { isRegional } from "../../lib/scope";
 
 const TYPE_VARIANT = {
   Metropolitan: "brand",
@@ -19,28 +21,39 @@ const TYPE_VARIANT = {
 };
 
 export default function Districts() {
+  const { user } = useSession();
+  const regional = isRegional(user);
+
+  // Scoped roles only ever have one MMDA to look at — their own
+  const scopedStats = useMemo(
+    () =>
+      regional
+        ? districtStats
+        : districtStats.filter((d) => d.code === user.jurisdictionCode),
+    [regional, user],
+  );
+
   const [search, setSearch] = useState("");
   const [type, setType] = useState("all");
 
   const filtered = useMemo(() => {
-    return districtStats.filter((d) => {
+    return scopedStats.filter((d) => {
       const matchesSearch =
         !search.trim() || d.name.toLowerCase().includes(search.toLowerCase());
       const matchesType = type === "all" || d.type === type;
       return matchesSearch && matchesType;
     });
-  }, [search, type]);
+  }, [scopedStats, search, type]);
 
   const metrics = useMemo(
     () => ({
-      total: districtStats.length,
-      metropolitan: districtStats.filter((d) => d.type === "Metropolitan")
-        .length,
-      municipal: districtStats.filter((d) => d.type === "Municipal").length,
-      district: districtStats.filter((d) => d.type === "District").length,
-      syncing: districtStats.filter((d) => d.status === "Syncing").length,
+      total: scopedStats.length,
+      metropolitan: scopedStats.filter((d) => d.type === "Metropolitan").length,
+      municipal: scopedStats.filter((d) => d.type === "Municipal").length,
+      district: scopedStats.filter((d) => d.type === "District").length,
+      syncing: scopedStats.filter((d) => d.status === "Syncing").length,
     }),
-    [],
+    [scopedStats],
   );
 
   const columns = [
@@ -94,8 +107,9 @@ export default function Districts() {
             Districts / MMDAs
           </h1>
           <p className="text-sm text-slate-500">
-            Coverage and performance across all Metropolitan, Municipal, and
-            District Assemblies.
+            {regional
+              ? "Coverage and performance across all Metropolitan, Municipal, and District Assemblies."
+              : `Performance overview for ${user.jurisdictionName}.`}
           </p>
         </div>
         <Button variant="outline" icon={Download}>
@@ -105,9 +119,9 @@ export default function Districts() {
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
         <MetricCard
-          label="Total MMDAs"
-          value="43 / 43"
-          delta="100% Region Connected"
+          label={regional ? "Total MMDAs" : "Your MMDA"}
+          value={regional ? "43 / 43" : user.jurisdictionName}
+          delta={regional ? "100% Region Connected" : user.role}
         />
         <MetricCard label="Metropolitan" value={metrics.metropolitan} />
         <MetricCard label="Municipal" value={metrics.municipal} />
@@ -126,14 +140,20 @@ export default function Districts() {
             className="w-full outline-none text-sm text-slate-700 placeholder:text-slate-400 bg-transparent"
           />
         </div>
-        <Select value={type} onChange={setType} options={districtTypeOptions} />
+        {regional && (
+          <Select
+            value={type}
+            onChange={setType}
+            options={districtTypeOptions}
+          />
+        )}
       </div>
 
       <div className="rounded-xl border border-slate-200 bg-white p-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-semibold text-slate-900 flex items-center gap-2">
             <Building2 size={16} className="text-brand-green" />
-            Showing {filtered.length} of {districtStats.length} MMDAs
+            Showing {filtered.length} of {scopedStats.length} MMDAs
           </h2>
         </div>
         <DataTable
