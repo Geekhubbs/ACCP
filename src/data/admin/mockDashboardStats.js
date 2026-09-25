@@ -33,8 +33,8 @@ export const districtPerformance = [
 ];
 
 export const auditStream = [
-  { title: "Official account created", detail: "Ing. Kwabena Mensah (KMA Roads Dept) provisioned by Kwame Boateng.", time: "14 mins ago", meta: "ARCC Security" },
-  { title: "Routing rule modified", detail: "Rule #RR-084 [Drainage / Bantama → KMA Works Unit] priority escalated to HIGH.", time: "1 hour ago", meta: "Auto-Rule Trigger", tag: "ESCALATED" },
-  { title: "User role promoted", detail: "Kofi Annan promoted to MMDA Lead Inspector (Asokwa Municipal).", time: "3 hours ago", meta: "Role Governance" },
-  { title: "District gateway synchronized", detail: "Sekyere South MMDA successfully verified and connected to regional emergency gateway.", time: "5 hours ago", meta: "Mesh Infra" },
+  { title: "Official account created", detail: "Ing. Kwabena Mensah (KMA Roads Dept) provisioned by Kwame Boateng.", time: "14 mins ago", meta: "ARCC Security", district: "Kumasi Metropolitan Assembly" },
+  { title: "Routing rule modified", detail: "Rule #RR-084 [Drainage / Bantama → KMA Works Unit] priority escalated to HIGH.", time: "1 hour ago", meta: "Auto-Rule Trigger", tag: "ESCALATED", district: "Kumasi Metropolitan Assembly" },
+  { title: "User role promoted", detail: "Kofi Annan promoted to MMDA Lead Inspector (Asokwa Municipal).", time: "3 hours ago", meta: "Role Governance", district: "Asokwa Municipal Assembly" },
+  { title: "District gateway synchronized", detail: "Sekyere South MMDA successfully verified and connected to regional emergency gateway.", time: "5 hours ago", meta: "Mesh Infra", district: "Sekyere South District Assembly" },
 ];

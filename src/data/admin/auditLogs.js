@@ -24,6 +24,7 @@ export const mockAuditLogs = [
     description: "Updated priority for rule #RT-014 from Medium to High",
     ipAddress: "102.176.44.21",
     timestamp: "2026-09-21 14:32",
+    district: "Ashanti Region",
   },
   {
     id: "LOG-1002",
@@ -34,6 +35,7 @@ export const mockAuditLogs = [
     description: "Marked report #RPT-2291 as Resolved",
     ipAddress: "102.176.12.87",
     timestamp: "2026-09-21 13:58",
+    district: "Kumasi Metropolitan Assembly",
   },
   {
     id: "LOG-1003",
@@ -44,6 +46,7 @@ export const mockAuditLogs = [
     description: "Auto-generated notification for report #RPT-2291 resolution",
     ipAddress: "internal",
     timestamp: "2026-09-21 13:58",
+    district: "Kumasi Metropolitan Assembly",
   },
   {
     id: "LOG-1004",
@@ -54,6 +57,7 @@ export const mockAuditLogs = [
     description: "Signed in to Government Dashboard",
     ipAddress: "102.176.55.10",
     timestamp: "2026-09-21 09:14",
+    district: "Kumasi Metropolitan Assembly",
   },
   {
     id: "LOG-1005",
@@ -64,6 +68,7 @@ export const mockAuditLogs = [
     description: "Added new institution: MMDA Security Unit",
     ipAddress: "102.176.44.21",
     timestamp: "2026-09-20 17:40",
+    district: "Ashanti Region",
   },
   {
     id: "LOG-1006",
@@ -74,6 +79,7 @@ export const mockAuditLogs = [
     description: "Deactivated category: Environment & Green Spaces",
     ipAddress: "102.176.44.21",
     timestamp: "2026-09-20 17:22",
+    district: "Ashanti Region",
   },
   {
     id: "LOG-1007",
@@ -84,6 +90,7 @@ export const mockAuditLogs = [
     description: "Reassigned report #RPT-2278 to field unit",
     ipAddress: "102.176.60.33",
     timestamp: "2026-09-20 11:05",
+    district: "Asokwa Municipal Assembly",
   },
 ];
 

@@ -13,6 +13,8 @@ import {
   roleOptions,
   userStatusOptions,
 } from "../../data/admin/mockUsers";
+import { useSession } from "../../context/SessionContext";
+import { scopeRows, isRegional } from "../../lib/scope";
 
 const ROLE_BADGE = {
   Citizen: "neutral",
@@ -27,13 +29,21 @@ const STATUS_BADGE = {
 };
 
 export default function Users() {
+  const { user } = useSession();
+  const regional = isRegional(user);
+
+  const scopedUsers = useMemo(
+    () => scopeRows(mockUsers, user, (u) => u.district),
+    [user],
+  );
+
   const [search, setSearch] = useState("");
   const [role, setRole] = useState("all");
   const [district, setDistrict] = useState("all");
   const [status, setStatus] = useState("all");
 
   const filtered = useMemo(() => {
-    return mockUsers.filter((u) => {
+    return scopedUsers.filter((u) => {
       const matchesSearch =
         !search.trim() ||
         u.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -47,18 +57,18 @@ export default function Users() {
 
       return matchesSearch && matchesRole && matchesStatus && matchesDistrict;
     });
-  }, [search, role, district, status]);
+  }, [scopedUsers, search, role, district, status]);
 
   const metrics = useMemo(
     () => ({
-      total: mockUsers.length,
-      citizens: mockUsers.filter((u) => u.role === "Citizen").length,
-      officials: mockUsers.filter((u) => u.role === "Official").length,
-      admins: mockUsers.filter((u) => u.role === "Admin").length,
-      pending: mockUsers.filter((u) => u.status === "Pending Verification")
+      total: scopedUsers.length,
+      citizens: scopedUsers.filter((u) => u.role === "Citizen").length,
+      officials: scopedUsers.filter((u) => u.role === "Official").length,
+      admins: scopedUsers.filter((u) => u.role === "Admin").length,
+      pending: scopedUsers.filter((u) => u.status === "Pending Verification")
         .length,
     }),
-    [],
+    [scopedUsers],
   );
 
   const columns = [
@@ -97,8 +107,9 @@ export default function Users() {
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Users</h1>
           <p className="text-sm text-slate-500">
-            Citizens, officials, and administrators across the Ashanti Civic
-            Platform.
+            {regional
+              ? "Citizens, officials, and administrators across the Ashanti Civic Platform."
+              : `Citizens, officials, and administrators registered under ${user.jurisdictionName}.`}
           </p>
         </div>
         <Button variant="primary" icon={UserPlus}>
@@ -108,7 +119,7 @@ export default function Users() {
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
         <MetricCard
-          label="Total Users"
+          label={regional ? "Total Users" : "Users in Jurisdiction"}
           value={metrics.total.toLocaleString()}
         />
         <MetricCard label="Citizens" value={metrics.citizens} />
@@ -129,11 +140,13 @@ export default function Users() {
           />
         </div>
         <Select value={role} onChange={setRole} options={roleOptions} />
-        <Select
-          value={district}
-          onChange={setDistrict}
-          options={mmdaFilterOptions}
-        />
+        {regional && (
+          <Select
+            value={district}
+            onChange={setDistrict}
+            options={mmdaFilterOptions}
+          />
+        )}
         <Select
           value={status}
           onChange={setStatus}
@@ -144,7 +157,7 @@ export default function Users() {
       <div className="rounded-xl border border-slate-200 bg-white p-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-semibold text-slate-900">
-            Showing {filtered.length} of {mockUsers.length} users
+            Showing {filtered.length} of {scopedUsers.length} users
           </h2>
         </div>
         <DataTable
